@@ -20,16 +20,16 @@ pressTime = float('Inf')  # this is used to keep track of the time passing betwe
 
 # the callback function when button is pressed/released
 def buttonPress(GPIOpin):
-    global pressTime                            # get access to the global time variable
-    if RPi.GPIO.input(GPIOpin) == False:        # if button falling event
-        pressTime = time.time()                 # get the current time
-    else:                                       # if button rising event
-        timePassed = time.time() - pressTime    # compute how long the button was pressed
-        if timePassed < 2:                      # if it is less than 2 seconds
-            pressTime = float('Inf')            # waiting for next button falling, prevent unintended reboot/shutdowns by setting this variable to positive infinity
-        elif timePassed < 5:                    # if pressed for 2 up to 5 seconds
+    global pressTime                                        # get access to the global time variable
+    if RPi.GPIO.input(GPIOpin) == False:                    # if button falling event
+        pressTime = time.time()                             # get the current time
+    else:                                                   # if button rising event
+        timePassed = time.time() - pressTime                # compute how long the button was pressed
+        if timePassed < 2:                                  # if it is less than 2 seconds
+            pressTime = float('Inf')                        # waiting for next button falling, prevent unintended reboot/shutdowns by setting this variable to positive infinity
+        elif timePassed < 5:                                # if pressed for 2 up to 5 seconds
             subprocess.call(['sudo reboot &'], shell=True)  # do reboot
-        else:                                   # if pressed for 5 seconds and more
+        else:                                               # if pressed for 5 seconds and more
 		    subprocess.call(['shutdown -h now "System shutdown by GPIO action" &'], shell=True)   # do shutdown
 
 RPi.GPIO.add_event_detect(GPIOpin, RPi.GPIO.BOTH, callback=buttonPress, bouncetime=100) # define interrupt

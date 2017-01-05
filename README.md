@@ -12,3 +12,6 @@ The file `ButtonPress.py` is a Python script that drives a shutdown and reboot b
 `python /home/pi/myTools/ButtonPress.py&`
 
 Than reboot and the script will run in background. Pressing the button for more than 2 seconds up to 5 seconds triggers a reboot. Pressing the button for more than 5 seconds triggers a shutdown. Pressing the button for less than 2 seconds does nothing.
+
+### More to come
+...
