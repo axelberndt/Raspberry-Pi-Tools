@@ -26,7 +26,7 @@ def buttonPress(GPIOpin):
     else:                                       # if button rising event
         timePassed = time.time() - pressTime    # compute how long the button was pressed
         if timePassed < 2:                      # if it is less than 2 seconds
-            pressTime = float('Inf')                # waiting for next button falling, prevent unintended reboot/shutdowns by setting this variable to positive infinity
+            pressTime = float('Inf')            # waiting for next button falling, prevent unintended reboot/shutdowns by setting this variable to positive infinity
         elif timePassed < 5:                    # if pressed for 2 up to 5 seconds
             subprocess.call(['sudo reboot &'], shell=True)  # do reboot
         else:                                   # if pressed for 5 seconds and more
