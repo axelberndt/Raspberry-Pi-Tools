@@ -30,7 +30,7 @@ def buttonPress(GPIOpin):
         elif timePassed < 5:                                # if pressed for 2 up to 5 seconds
             subprocess.call(['sudo reboot &'], shell=True)  # do reboot
         else:                                               # if pressed for 5 seconds and more
-		    subprocess.call(['shutdown -h now "System shutdown by GPIO action" &'], shell=True)   # do shutdown
+            subprocess.call(['shutdown -h now "System shutdown by GPIO action" &'], shell=True)   # do shutdown
 
 RPi.GPIO.add_event_detect(GPIOpin, RPi.GPIO.BOTH, callback=buttonPress, bouncetime=100) # define interrupt
 
