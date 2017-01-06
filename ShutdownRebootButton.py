@@ -3,7 +3,7 @@
 # This Python script drives a shutdown/reboot button on GPIO pin 13, GND on pin 14.
 # Put it to a location on your Pi, say /home/pi/myTools/ and add the following line
 # to /etc/rc.local before exit 0:
-# python /home/pi/myTools/ButtonPress.py&
+# python /home/pi/myTools/ShutdownRebootButton.py&
 
 # Author: Axel Berndt
 
@@ -12,11 +12,12 @@ import subprocess
 import RPi.GPIO
 
 GPIOpin = 27    # Button is on GPIO channel 27 / pin 13 of 40way connector with GND on pin 14
-
-RPi.GPIO.setmode(RPi.GPIO.BCM)
-RPi.GPIO.setup(GPIOpin, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)  # setup the channel as input with a 50K Ohm pull up. A push button will ground the pin, creating a falling edge.
-
 pressTime = float('Inf')  # this is used to keep track of the time passing between button press and release, when waiting for button press/falling it has the positive inf value to prevent unintended shutdowns
+
+def init():
+    RPi.GPIO.setmode(RPi.GPIO.BCM)                          # set the GPIO naming/numbering convention to BCM
+    RPi.GPIO.setup(GPIOpin, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)  # setup the channel as input with a 50K Ohm pull up. A push button will ground the pin, creating a falling edge.
+    RPi.GPIO.add_event_detect(GPIOpin, RPi.GPIO.BOTH, callback=buttonPress, bouncetime=100) # define interrupt
 
 # the callback function when button is pressed/released
 def buttonPress(GPIOpin):
@@ -32,13 +33,14 @@ def buttonPress(GPIOpin):
         else:                                               # if pressed for 5 seconds and more
             subprocess.call(['shutdown -h now "System shutdown by GPIO action" &'], shell=True)   # do shutdown
 
-RPi.GPIO.add_event_detect(GPIOpin, RPi.GPIO.BOTH, callback=buttonPress, bouncetime=100) # define interrupt
+def main():
+    try:                        # run the program
+        init()                  # initialize everything
+        while True:             # idle loop
+            time.sleep(60)      # wakes up once every minute
+    except KeyboardInterrupt:
+        RPi.GPIO.cleanup()      # clean up GPIO on CTRL+C exit
+    RPi.GPIO.cleanup()          # clean up GPIO on normal exit
 
-try:                        # run the program
-    while True:             # idle loop
-        time.sleep(60)      # wakes up once every minute
-
-except KeyboardInterrupt:
-    RPi.GPIO.cleanup()      # clean up GPIO on CTRL+C exit
-RPi.GPIO.cleanup()          # clean up GPIO on normal exit
-
+if __name__ == '__main__':
+    main()

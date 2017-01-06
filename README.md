@@ -7,9 +7,9 @@ Author: [Axel Berndt](https://github.com/axelberndt)<br>
 This repository holds some useful code for the Raspberry Pi. It is tested and runs under Raspbian Jessie.
 
 ### Shutdown and Reboot Button
-The file `ButtonPress.py` is a Python script that drives a shutdown and reboot button on GPIO pin 13 (GND on pin 14 or any other ground pin). Put it to a location on your Pi, say `/home/pi/myTools/` and add the following line to `/etc/rc.local` before `exit 0`.
+The file `ShutdownRebootButton.py` is a Python script that drives a shutdown and reboot button on GPIO pin 13 (GND on pin 14 or any other ground pin). Put it to a location on your Pi, say `/home/pi/myTools/` and add the following line to `/etc/rc.local` before `exit 0`.
 
-`python /home/pi/myTools/ButtonPress.py&`
+`python /home/pi/myTools/ShutdownRebootButton.py&`
 
 Than reboot and the script will run in background. Pressing the button for more than 2 seconds up to 5 seconds triggers a reboot. Pressing the button for more than 5 seconds triggers a shutdown. Pressing the button for less than 2 seconds does nothing.
 
