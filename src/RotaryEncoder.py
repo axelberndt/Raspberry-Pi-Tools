@@ -3,7 +3,8 @@
 # This Python script reads a rotary encoder connected to GPIO pin 16 and 18, GND on pin 14 or any other ground pin.
 # Some encoders have inverse direction; in this case swap the values of GPIOpinA and GPIOpinB accordingly.
 # This solution works without debouncing. However, very quick rotation may lead to missing state changes and, hence,
-# some results could be wrong.
+# some few results could be wrong.
+# Furthermore, most users will not need the locking and can safely remove everything on that (wherever variable lock occurs).
 # Put it to a location on your Pi, say /home/pi/myTools/ and write the following line at the terminal.
 # python /home/pi/myTools/RotaryEncoder.py&
 # This will execute the script in background and produce terminal output whenever the encoder rotates.
@@ -23,7 +24,7 @@
 #  B  |       |       |       |
 #   --+       +-------+       +------ 1
 
-import RPi.GPIO
+from RPi import GPIO
 from time import sleep
 
 
@@ -38,19 +39,19 @@ bDown = False   # this is set True to wait for GPIO B to go down
 
 # initialize GPIO input and define interrupts
 def init():
-    RPi.GPIO.setmode(RPi.GPIO.BCM)                                                  # set the GPIO naming/numbering convention to BCM
-    RPi.GPIO.setup(GPIOpinA, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)             # input channel A
-    RPi.GPIO.setup(GPIOpinB, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)             # input channel B
-    RPi.GPIO.add_event_detect(GPIOpinA, RPi.GPIO.BOTH, callback=rotaryInterruptA)   # define interrupt for action on channel A (no bouncetime needed)
-    RPi.GPIO.add_event_detect(GPIOpinB, RPi.GPIO.BOTH, callback=rotaryInterruptB)   # define interrupt for action on channel B (no bouncetime needed)
+    GPIO.setmode(GPIO.BCM)                                                  # set the GPIO naming/numbering convention to BCM
+    GPIO.setup(GPIOpinA, GPIO.IN, pull_up_down=GPIO.PUD_UP)                 # input channel A
+    GPIO.setup(GPIOpinB, GPIO.IN, pull_up_down=GPIO.PUD_UP)                 # input channel B
+    GPIO.add_event_detect(GPIOpinA, GPIO.BOTH, callback=rotaryInterruptA)   # define interrupt for action on channel A (no bouncetime needed)
+    GPIO.add_event_detect(GPIOpinB, GPIO.BOTH, callback=rotaryInterruptB)   # define interrupt for action on channel B (no bouncetime needed)
 
 
 # the callback functions when turning the encoder
 # this one reacts on action on channel A
 def rotaryInterruptA(GPIOpin):
     global lock, GPIOpinA, GPIOpinB     # get access to some global variables
-    A = RPi.GPIO.input(GPIOpinA)        # read current value of channel A
-    B = RPi.GPIO.input(GPIOpinB)        # read current value of channel B
+    A = GPIO.input(GPIOpinA)            # read current value of channel A
+    B = GPIO.input(GPIOpinB)            # read current value of channel B
 
     while lock:                         # while another interrupt is processing
         pass                            # wait
@@ -80,7 +81,7 @@ def rotaryInterruptA(GPIOpin):
 # this callback function reacts on action on channel B
 def rotaryInterruptB(GPIOpin):
     global lock, GPIOpinB           # get access to some global variables
-    B = RPi.GPIO.input(GPIOpinB)    # read current value of channel B
+    B = GPIO.input(GPIOpinB)        # read current value of channel B
 
     while lock:                     # while another interrupt is processing
         pass                        # wait
@@ -106,8 +107,8 @@ def main():
         while True:             # idle loop
             sleep(300)          # wakes up once every 5 minutes = 300 seconds
     except KeyboardInterrupt:
-        RPi.GPIO.cleanup()      # clean up GPIO on CTRL+C exit
-    RPi.GPIO.cleanup()          # clean up GPIO on normal exit
+        GPIO.cleanup()          # clean up GPIO on CTRL+C exit
+    GPIO.cleanup()              # clean up GPIO on normal exit
 
 # the entry point
 if __name__ == '__main__':
