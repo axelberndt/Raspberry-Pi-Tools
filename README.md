@@ -37,5 +37,13 @@ This script requires the `python-alsaaudio` package to be installed! If it is no
 
 After the next reboot the script will run in background and allow you to control the Master volume via a rotary encoder. To access a different ALSA channel or have access to the separate output lines (e.g., left and right from a stereo channel) have a closer look into the code and find the corresponding comments and code lines in method `rotaryInterruptA()`. Further documentation of the `alsaaudio` package can be found [here](http://larsimmisch.github.io/pyalsaaudio/libalsaaudio.html#mixer-objects).
 
+### Combined Shutdown/Reboot and Volume Control
+
+The Python script `ShutdownRebootVolumeControl.py` is a combination of `ShutdownRebootButton.py` and `VolumeRotaryControl.py`. It is handy for those who use a rotary switch. To use it place it on your Pi, e.g. in `/home/pi/myTools/`, and add the line
+
+`python /home/pi/myTools/ShutdownRebootVolumeControl.py&`
+
+to `/etc/rc.local` before `exit 0`.
+
 ### More to come
 ...
