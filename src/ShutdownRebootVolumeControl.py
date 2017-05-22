@@ -28,7 +28,7 @@ def init():
     GPIO.setup(GPIOpinButton, GPIO.IN, pull_up_down=GPIO.PUD_UP)            # setup the channel as input with a 50K Ohm pull up. A push button will ground the pin, creating a falling edge.
     GPIO.add_event_detect(GPIOpinA, GPIO.BOTH, callback=rotaryInterruptA)   # define interrupt for action on channel A (no bouncetime needed)
     GPIO.add_event_detect(GPIOpinB, GPIO.BOTH, callback=rotaryInterruptB)   # define interrupt for action on channel B (no bouncetime needed)
-    GPIO.add_event_detect(GPIOpinButton, GPIO.BOTH, callback=buttonInterrupt, bouncetime=100)  # define interrupt
+    GPIO.add_event_detect(GPIOpinButton, GPIO.BOTH, callback=buttonInterrupt)#, bouncetime=100) # define interrupt, add the bouncetime if it works better with your button
 
 
 # the callback functions when turning the encoder
@@ -79,6 +79,8 @@ def buttonInterrupt(GPIOpin):
     global pressTime                            # get access to the global time variable
     if not GPIO.input(GPIOpin):                 # if button falling event
         pressTime = time()                      # get the current time
+        if pressTime != float('Inf'):           # if button is already pressed due to missing rise event or bouncing
+            return                              # keep the current pressTime value, done
     else:                                       # if button rising event
         timePassed = time() - pressTime         # compute how long the button was pressed
         if timePassed < 2:                      # if it is less than 2 seconds

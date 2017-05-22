@@ -17,12 +17,14 @@ pressTime = float('Inf')  # this is used to keep track of the time passing betwe
 def init():
     GPIO.setmode(GPIO.BCM)                                  # set the GPIO naming/numbering convention to BCM
     GPIO.setup(GPIOpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # setup the channel as input with a 50K Ohm pull up. A push button will ground the pin, creating a falling edge.
-    GPIO.add_event_detect(GPIOpin, GPIO.BOTH, callback=buttonPress, bouncetime=100) # define interrupt
+    GPIO.add_event_detect(GPIOpin, GPIO.BOTH, callback=buttonPress)#, bouncetime=100) # define interrupt, add the bouncetime if it works better with your button
 
 # the callback function when button is pressed/released
 def buttonPress(GPIOpin):
     global pressTime                            # get access to the global time variable
     if not GPIO.input(GPIOpin):                 # if button falling event
+        if pressTime != float('Inf'):           # if button is already pressed due to missing rise event or bouncing
+            return                              # keep the current pressTime value, done
         pressTime = time()                      # get the current time
     else:                                       # if button rising event
         timePassed = time() - pressTime         # compute how long the button was pressed
