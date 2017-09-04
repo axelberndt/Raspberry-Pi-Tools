@@ -68,14 +68,12 @@ def rotaryInterruptA(GPIOpin):
 
         if B:                               # if B is already up, the rotation direction is ->
             aDown = True                    # to finish the cycle, wait for A to go down again
-            volume += 1                     # increase volume gain
-            if volume > 100:                # but do not get greater than 100 (ALSA max)
-                volume = 100                # any value greater than 100 is clipped at 100
+            if volume < 100:                # do not get greater than 100 (ALSA max)
+                volume += 1                 # increase volume gain
         else:                               # if B still has to come up, the rotation direction is <-
             bUp = True                      # in this rotation cycle B has to come up and down again, we start with waiting for B to come up
-            volume -= 1                     # decrease volume gain
-            if volume < 0:                  # but do not get less than 0 (ALSA min)
-                volume = 0                  # any value less than 0 is clipped at 0
+            if volume > 0:                  # do not get below 0 (ALSA min)
+                volume -= 1                 # decrease volume gain
 
         mixer.setvolume(volume)             # apply the new volume gain to the mixer channel
         # To control the different subchannels of the mixer channel independently, replace the line above by these (example for stereo)
