@@ -44,6 +44,3 @@ The Python script `ShutdownRebootVolumeControl.py` is a combination of `Shutdown
 `python /home/pi/myTools/ShutdownRebootVolumeControl.py&`
 
 to `/etc/rc.local` before `exit 0`.
-
-### More to come
-...
