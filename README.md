@@ -1,4 +1,4 @@
-# Raspberry Pi Tools
+# Raspberry Pi Volume Rotary Encoder & Shutdown/Reboot Button
 
 [![GPL v3](https://img.shields.io/badge/license-GNU%20General%20Public%20License%20v3.0-blue.svg)](https://github.com/axelberndt/Raspberry-Pi-Tools/blob/master/LICENSE)
 
